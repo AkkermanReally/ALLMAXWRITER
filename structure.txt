@@ -1,0 +1,80 @@
+acad_writer_pro/
+├── app/                      # Основной код приложения
+│   ├── __init__.py
+│   ├── api/                  # FastAPI роутеры (эндпоинты)
+│   │   ├── __init__.py
+│   │   ├── projects.py       # API для управления проектами (создание, список, редактирование файлов)
+│   │   ├── generation.py     # API для взаимодействия с LLM (на базе ALLMAX_EDY)
+│   │   └── formatting.py     # API для управления настройками форматирования и запуска сборки DOCX
+│   ├── core/                 # Ключевые компоненты и конфигурация приложения
+│   │   ├── __init__.py
+│   │   └── config.py         # Глобальные настройки приложения (пути, возможно, ключи API)
+│   ├── models/               # Pydantic модели для валидации данных API
+│   │   ├── __init__.py
+│   │   ├── projects.py       # Модели, связанные с проектами
+│   │   └── generation.py     # Модели для запросов/ответов генерации текста
+│   │   └── formatting.py     # Модели для конфигураций форматирования
+│   ├── services/             # Бизнес-логика
+│   │   ├── __init__.py
+│   │   ├── project_service.py # Логика работы с файловой системой проектов
+│   │   ├── llm_service.py     # Логика взаимодействия с Gemini (использует app/llm_clients/gemini)
+│   │   └── docx_service.py    # Логика генерации DOCX (использует app/docx_generator)
+│   ├── static/               # Фронтенд: HTML, CSS, JS
+│   │   ├── index.html        # Основной HTML-файл интерфейса
+│   │   ├── css/
+│   │   │   └── main.css      # Основные стили
+│   │   │   └── project_history.css
+│   │   │   └── text_editor.css
+│   │   │   └── format_panel.css
+│   │   ├── js/
+│   │   │   └── main.js       # Глобальный JS
+│   │   │   └── api_client.js # Функции для вызова бэкенд API
+│   │   │   └── project_history_ui.js
+│   │   │   └── text_editor_ui.js
+│   │   │   └── format_panel_ui.js
+│   │   └── images/           # Изображения для UI
+│   ├── llm_clients/          # Клиенты для работы с различными LLM
+│   │   ├── __init__.py
+│   │   └── gemini/           # Код из ALLMAX_EDY/app/gemini
+│   │       ├── __init__.py
+│   │       ├── connection.py
+│   │       ├── config.py     # Конфигурация Gemini (API ключи)
+│   │       ├── gemini.py
+│   │       ├── misc.py
+│   │       └── models.py
+│   │       └── system_instruction.py # Промпты для Gemini из ALLMAX_EDY
+│   └── docx_generator/       # Модуль для генерации и форматирования DOCX
+│       ├── __init__.py
+│       ├── main_processor.py # Оркестратор (на базе FORMATTER/main_processor.py)
+│       ├── md_to_docx.py     # Функции для Pandoc и начальной конвертации
+│       ├── xml_templater.py  # Работа с XML-шаблонами DOCX (на базе FORMATTER/xml_processing/templates.py)
+│       ├── xml_processor.py  # Тонкая настройка XML (на базе FORMATTER/xml_processing/* utils, generators)
+│       ├── packager.py       # Упаковщик DOCX (на базе FORMATTER/xml_processing/packager.py)
+│       ├── system_prompts/   # Системные промпты для LLM для генерации Markdown
+│       │   └── coursework_md_prompt.txt # из FORMATTER/system.txt
+│       │   └── diploma_md_prompt.txt    # (можно добавить разные)
+│       └── reference_docs/   # Эталонные документы для Pandoc
+│           └── template.docx # из FORMATTER/template.docx
+│           └── custom_styles.xml # (если стили будут вынесены отдельно для Pandoc)
+├── projects_data/            # Директория для хранения данных проектов пользователей
+│   └── project_id_1/         # Пример директории одного проекта
+│       ├── source_materials/ # Загруженные пользователем исходные файлы
+│       │   └── article.txt
+│       │   └── image.png
+│       ├── generated_texts/  # Тексты, сгенерированные LLM
+│       │   └── chapter1_raw.txt
+│       │   └── introduction_v2.md
+│       ├── chat_history.json # История взаимодействия с LLM для этого проекта
+│       ├── formatting_config.json # Конфигурация форматирования DOCX для этого проекта
+│       └── project_meta.json # Метаданные проекта (имя, дата создания и т.д.)
+├── config/                   # Глобальные конфигурации приложения (не пользовательские)
+│   └── default_formatting.json # Шаблон форматирования DOCX по умолчанию
+│   └── llm_providers.json    # Настройки для разных LLM провайдеров (если планируется расширение)
+├── tests/                    # Модульные и интеграционные тесты
+│   ├── __init__.py
+│   ├── test_project_service.py
+│   └── ...
+├── .gitignore
+├── main.py                   # Точка входа FastAPI приложения (на базе ALLMAX_EDY/main.py)
+├── README.md
+└── requirements.txt          # Зависимости проекта (объединить из ALLMAX_EDY и FORMATTER)
